@@ -94,7 +94,7 @@ export default function Signup() {
               <input type="password" className="form-control" value={credentials.password} onChange={onChange} name='password' />
             </div>
             <button type="submit" className="m-3 btn btn-success">Submit</button>
-            <Link to="/login" className="m-3 mx-1 btn btn-danger">Already a user</Link>
+            <Link to="/login" className="m-3 mx-1 btn btn-danger">Already a user?</Link>
           </form>
         </div>
       </div>
