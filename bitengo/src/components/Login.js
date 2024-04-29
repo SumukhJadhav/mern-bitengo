@@ -1,54 +1,66 @@
-import React from 'react'
-
+import React, { useState } from 'react'
+import Navbar from '../components/Navbar';
+import { useNavigate, Link } from 'react-router-dom'
 export default function Login() {
+  const [credentials, setCredentials] = useState({ email: "", password: "" })
+  let navigate = useNavigate()
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      // credentials: 'include',
+      // Origin:"http://localhost:3000/login",
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email: credentials.email, password: credentials.password })
+
+    });
+    const json = await response.json()
+    console.log(json);
+    if (json.success) {
+      //save the auth toke to local storage and redirect
+      localStorage.setItem('userEmail', credentials.email)
+      localStorage.setItem('token', json.authToken)
+      navigate("/");
+
+    }
+    else {
+      alert("Enter Valid Credentials")
+    }
+  }
+
+  const onChange = (e) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value })
+  }
+
   return (
-    <div>
-        <section className="vh-100 gradient-custom">
-  <div className="container py-5 h-100">
-    <div className="row d-flex justify-content-center align-items-center h-100">
-      <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-        <div className="card bg-dark text-white" style={{"border-radius": "1rem"}}>
-          <div className="card-body p-5 text-center">
-
-            <div className="mb-md-5 mt-md-4 pb-5">
-
-              <h2 className="fw-bold mb-2 text-uppercase">Login</h2>
-              <p className="text-white-50 mb-5">Please enter your login and password!</p>
-
-              <div data-mdb-input-init className="form-outline form-white mb-4">
-                <input type="email" id="typeEmailX" className="form-control form-control-lg" />
-                <label className="form-label" for="typeEmailX">Email</label>
-              </div>
-
-              <div data-mdb-input-init className="form-outline form-white mb-4">
-                <input type="password" id="typePasswordX" className="form-control form-control-lg" />
-                <label className="form-label" for="typePasswordX">Password</label>
-              </div>
-
-              <p className="small mb-5 pb-lg-2"><a className="text-white-50" href="#!">Forgot password?</a></p>
-
-              <button data-mdb-button-init data-mdb-ripple-init className="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
-
-              <div className="d-flex justify-content-center text-center mt-4 pt-1">
-                <a href="#!" className="text-white"><i className="fab fa-facebook-f fa-lg"></i></a>
-                <a href="#!" className="text-white"><i className="fab fa-twitter fa-lg mx-4 px-2"></i></a>
-                <a href="#!" className="text-white"><i className="fab fa-google fa-lg"></i></a>
-              </div>
-
-            </div>
-
-            <div>
-              <p className="mb-0">Don't have an account? <a href="#!" className="text-white-50 fw-bold">Sign Up</a>
-              </p>
-            </div>
-
-          </div>
-        </div>
+    <div style={{backgroundImage: 'url("https://images.pexels.com/photos/326278/pexels-photo-326278.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")', height: '100vh', backgroundSize: 'cover' }}>
+      <div>
+        <Navbar />
       </div>
-    </div>
-  </div>
-</section>
+      <div className='container'>
+        <form className='w-50 m-auto mt-5 border bg-dark border-success rounded' onSubmit={handleSubmit}>
+          <div className="m-3">
+            <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
+            <input type="email" className="form-control" name='email' value={credentials.email} onChange={onChange} aria-describedby="emailHelp" />
+            <div id="emailHelp" className="form-text">We'll never share your email with anyone.</div>
+          </div>
+          <div className="m-3">
+            <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
+            <input type="password" className="form-control" value={credentials.password} onChange={onChange} name='password' />
+          </div>
+          <button type="submit" className="m-3 btn btn-success">Submit</button>
+          <Link to="/signup" className="m-3 mx-1 btn btn-danger">New User</Link>
+        </form>
 
+      </div>
     </div>
   )
 }
+
+
+// , 'Accept': 'application/json',
+//         'Access-Control-Allow-Origin': 'http://localhost:3000/login', 'Access-Control-Allow-Credentials': 'true',
+//         "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",'Access-Control-Allow-Methods': 'PUT, POST, GET, DELETE, OPTIONS'
