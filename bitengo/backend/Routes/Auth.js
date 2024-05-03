@@ -135,7 +135,8 @@ router.post('/foodData', async (req, res) => {
         // console.log( JSON.stringify(global.foodData))
         // const userId = req.user.id;
         // await database.listCollections({name:"food_items"}).find({});
-        res.send([global.foodData, global.foodCategory])
+        res.send([global.food_items, global.foodCategory])
+        // console.log(global.categoryCollection)
     } catch (error) {
         console.error(error.message)
         res.send("Server Error")
